@@ -104,21 +104,25 @@ function generateTags(){
 
     /* get tags from data-tags attribute */
     const articleTags = article.dataset.tags;
-    console.log(articleTags);
+    // console.log(articleTags);
     /* split tags into array */
+    let tagsArray = articleTags.split(' ');
 
     /* START LOOP: for each tag */
+    for(let tag of tagsArray) {
 
-      /* generate HTML of the link */
-
+       /* generate HTML of the link  <li><a href="#tag-costam">costam</a></li> */
+      const tagLink = '<li><a href="#tag-' + tag + '">' + tag + ',</a></li>';
       /* add generated code to html variable */
-
-    /* END LOOP: for each tag */
-
-    /* insert HTML of all the links into the tags wrapper */
-
+      html = tagLink;
+      console.log(html);
+      /* END LOOP: for each tag */
+    }
+      /* insert HTML of all the links into the tags wrapper */
+      tagsWrapper.insertAdjacentHTML("beforeend", html);
+  
   /* END LOOP: for every article: */
   }
-}
 
+}
 generateTags();
