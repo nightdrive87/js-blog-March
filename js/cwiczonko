@@ -1,0 +1,11 @@
+
+
+$link = 'google.com';
+$nazwa_linku = 'Google';
+$imie = 'Gosia';
+$data = '19 listoada';
+'Witaj ' + $imie + 'mam urodziny: ' + $data; // Witaj Gosia mam urodziny: 19 listoada 
+
+
+'<li><a href="' + $link + '">' + $nazwa_linku + '</a></li>'
+
