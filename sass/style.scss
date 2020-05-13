@@ -122,6 +122,37 @@ body {
 
 .titles {
   a.active {
+    
     color: red;
   }
+}
+.tag-size-1 { 
+  text-decoration: none;
+  font-size: 14px;
+  color: green;
+
+}
+.tag-size-2 { 
+  text-decoration: none;
+  font-size: 16px;
+  color: red;
+
+}
+.tag-size-3 { 
+  text-decoration: none;
+  font-size: 18px;
+  color: violet;
+
+}
+.tag-size-4 { 
+  text-decoration: none;
+  font-size: 20px;
+  color: orange;
+
+}
+.tag-size-5 { 
+  text-decoration: none;
+  font-size: 22px;
+  color: magenta;
+
 }

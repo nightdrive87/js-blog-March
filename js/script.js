@@ -6,7 +6,9 @@ const optArticleSelector = ".post",
   optArticleTagsSelector = ".post-tags .list",
   optActiveTagsLinks = ".post-tags .list a.active",
   optPostAuthorWrapperSelector = ".post-author",
-  optTagsListSelector = ".tags.list";
+  optTagsListSelector = ".tags.list",
+  optCloudClassCount = 5,
+  optCloudClassPrefix = "tag-size";
 
 // title links
 
@@ -80,6 +82,15 @@ function addListenersToLinks() {
   }
 }
 
+function calculateTagClass(count,params) {
+  const normalizedCount = count - params.min;
+  const normalizedMax = params.max - params.min;
+
+  const percentage = normalizedCount / normalizedMax;
+  const classNumber = Math.floor(percentage * (optCloudClassCount - 1 ) + 1);
+  return classNumber;
+}
+
 // tags
 
 function generateTags() {
@@ -124,9 +135,32 @@ function generateTags() {
 
   /* [NEW] add html from allTags to tagList */
   // tagList.innerHTML = allTags.join(' ');
+  function calculateTagsParams(tags) {
+    const params = {
+      min: 999999,
+      max: 0,
+      
+    }
+    console.log('stan poczatkowy: ' + params.max);
+    for (let tag in tags) {
+      if(tags[tag] > params.max){
+        params.max = tags[tag]
+        console.log('PO IF MAX:' + params.max)
+      }
+      if(tags[tag] < params.min){
+        params.min = tags[tag]
+        console.log('PO IF MIN:' + params.min)
+      }
+      console.log(tag + " is used " + tags[tag] + ' times');
+    }
+    return params;
+
+  }
+  const tagsParams = calculateTagsParams(allTags);
+  console.log('tagsParams:', tagsParams);
   let allTagsHTML = '';
-  for (let tag in allTags){ // <li><a href="#tag-cats">cats (3)</a></li>
-    allTagsHTML += '<li><a href="#tag-' + tag + '">' + tag + ' (' + allTags[tag] + ')</a></li>';
+  for (let tag in allTags){ // <li><a href="#tag-cats" class="tag-size-5">cats (3)</a></li>
+    allTagsHTML += '<span><a href="#tag-' + tag + '" class="tag-size-' + calculateTagClass(allTags[tag], tagsParams)+ '">' + tag + ' </a></span>'; //co to kurwa jest?!
     // allTagsHTML += tag + ' (' + allTags[tag] + ')'; // --> cats (3)      pobierasz wartość z kolekcji i wypluwa liczbę wystąpień
   }
   tagList.innerHTML = allTagsHTML;
