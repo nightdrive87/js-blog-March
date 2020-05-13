@@ -83,7 +83,7 @@ function addListenersToLinks() {
 // tags
 
 function generateTags() {
-  let allTags = [];
+  let allTags = {};
   /* find all articles */
   const allArticles = document.querySelectorAll(optArticleSelector);
 
@@ -105,9 +105,11 @@ function generateTags() {
       /* add generated code to html variable */
       html += tagLink;
 
-      if(allTags.indexOf(tagLink) == -1){
+      if(!allTags[tag]){
         /* [NEW] add generated code to allTags array */
-        allTags.push(tagLink);
+        allTags[tag] = 1
+      } else {
+        allTags[tag]++; //podnosi licznik o 1
       }
       console.log(allTags)
       /* END LOOP: for each tag */
@@ -121,8 +123,13 @@ function generateTags() {
   const tagList = document.querySelector('.tags');
 
   /* [NEW] add html from allTags to tagList */
-  tagList.innerHTML = allTags.join(' ');
-
+  // tagList.innerHTML = allTags.join(' ');
+  let allTagsHTML = '';
+  for (let tag in allTags){ // <li><a href="#tag-cats">cats (3)</a></li>
+    allTagsHTML += '<li><a href="#tag-' + tag + '">' + tag + ' (' + allTags[tag] + ')</a></li>';
+    // allTagsHTML += tag + ' (' + allTags[tag] + ')'; // --> cats (3)      pobierasz wartość z kolekcji i wypluwa liczbę wystąpień
+  }
+  tagList.innerHTML = allTagsHTML;
   // TUTAJ ADD CLICK LISTENERS TO TAGS A Z DOLU WYWALIC
 }
 
