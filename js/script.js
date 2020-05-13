@@ -5,7 +5,8 @@ const optArticleSelector = ".post",
   optTitleListSelector = ".titles",
   optArticleTagsSelector = ".post-tags .list",
   optActiveTagsLinks = ".post-tags .list a.active",
-  optPostAuthorWrapperSelector = ".post-author";
+  optPostAuthorWrapperSelector = ".post-author",
+  optTagsListSelector = ".tags.list";
 
 // title links
 
@@ -82,6 +83,7 @@ function addListenersToLinks() {
 // tags
 
 function generateTags() {
+  let allTags = [];
   /* find all articles */
   const allArticles = document.querySelectorAll(optArticleSelector);
 
@@ -97,11 +99,17 @@ function generateTags() {
     let tagsArray = articleTags.split(" ");
     /* START LOOP: for each tag */
     for (let tag of tagsArray) {
-      /* generate HTML of the link  <li><a href="#tag-costam">costam</a></li> */
+      /* generate HTML of the link  */
       const tagLink = `<li><a href="#tag-${tag}">${tag}</a>&nbsp;</li>`;
       // poczytać o nbsp;
       /* add generated code to html variable */
       html += tagLink;
+
+      if(allTags.indexOf(tagLink) == -1){
+        /* [NEW] add generated code to allTags array */
+        allTags.push(tagLink);
+      }
+      console.log(allTags)
       /* END LOOP: for each tag */
     }
     /* insert HTML of all the links into the tags wrapper */
@@ -109,6 +117,11 @@ function generateTags() {
   }
   /* END LOOP: for every article: */
 
+  /* [NEW] find list of tags in right column */
+  const tagList = document.querySelector('.tags');
+
+  /* [NEW] add html from allTags to tagList */
+  tagList.innerHTML = allTags.join(' ');
 
   // TUTAJ ADD CLICK LISTENERS TO TAGS A Z DOLU WYWALIC
 }
@@ -168,24 +181,40 @@ function addClickListenersToTags() {
 // authors
 
 function generateAuthors() {
-  const allArticles = document.querySelectorAll(optArticleSelector); 
+  const allArticles = document.querySelectorAll(optArticleSelector);
+
   for (let article of allArticles) {
     const authorWrapper = article.querySelector(optPostAuthorWrapperSelector);
     const author = article.dataset.author;
-    const authorLink = `<li><a href="#" data-author=${author}>${author}</a></li>`;
+    const authorLink = `<li><a href="#" data-author='${author}'>${author}</a></li>`;
     authorWrapper.innerHTML = authorLink;
   }
 }
+//START Dodane 13-05-2020
+function authorClickHandler(event) {
+  event.preventDefault();
+  const clickedElement = this;
+  const href = clickedElement.getAttribute("data-author");
+  console.log(href);
 
-function tagClickHandler(event) {}
+  generateTitleLinks('[data-author="' + href + '"]');
+}
 
-function addClickListenersToAuthorLinks() {}
+function addClickListenersToAuthorLinks() {
+  const authorLinks = document.querySelectorAll('a[data-author]');
+  for(let authorLink of authorLinks) {
+    authorLink.addEventListener("click", authorClickHandler);
+  }
+
+}
+
+//KONIEC 13-05-2020
 
 
 generateTitleLinks();
 generateTags();
 generateAuthors();
-addClickListenersToTags();
-
+addClickListenersToTags(); // DODANE 13-05-2020
+addClickListenersToAuthorLinks(); // DODANE 13-05-2020
 // https://developer.mozilla.org/pl/docs/Web/JavaScript/Referencje/Obiekty/Array/map
 // https://developer.mozilla.org/pl/docs/Web/JavaScript/Referencje/Obiekty/Array/forEach
