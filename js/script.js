@@ -1,54 +1,13 @@
 "use strict";
 
-const titleClickHandler = function (event) {
-  /* remove class 'active' from all article links  */
-  const activeLinks = document.querySelectorAll(".titles a.active");
-
-  for (let activeLink of activeLinks) {
-    activeLink.classList.remove("active");
-  }
-
-  /* add class 'active' to the clicked link */
-  const clickedElement = this;
-  clickedElement.classList.add("active");
-
-  /* remove class 'active' from all articles */
-  const posts = document.querySelectorAll(".post");
-  for (let post of posts) {
-    post.classList.remove("active");
-  }
-
-  /* get 'href' attribute from the clicked link */
-  const linkHref = clickedElement.getAttribute("href");
-
-  /* find the correct article using the selector (value of 'href' attribute) */
-  const correctArticle = document.getElementById(linkHref.replace("#", ""));
-
-  /* add class 'active' to the correct article */
-  correctArticle.classList.add("active");
-};
-
-// TODO: REMOVE AFTER TEST
-// const posts = document.querySelectorAll(".post");
-
-// for (let post of posts) {
-//   const postId = post.id;
-//   const postTitle = post.querySelector(".post-title").innerHTML;
-// }
-
 const optArticleSelector = ".post",
   optTitleSelector = ".post-title",
   optTitleListSelector = ".titles",
   optArticleTagsSelector = ".post-tags .list",
-  optActiveTagsLinks = ".post-tags .list a.active";
+  optActiveTagsLinks = ".post-tags .list a.active",
+  optPostAuthorWrapperSelector = ".post-author";
 
-function addListenersToLinks() {
-  const links = document.querySelectorAll(".titles a");
-
-  for (let link of links) {
-    link.addEventListener("click", titleClickHandler);
-  }
-}
+// title links
 
 function generateTitleLinks(customSelector = "") {
   /* remove contents of titleList */
@@ -84,7 +43,43 @@ function generateTitleLinks(customSelector = "") {
   addListenersToLinks();
 }
 
-generateTitleLinks();
+const titleClickHandler = function (event) {
+  /* remove class 'active' from all article links  */
+  const activeLinks = document.querySelectorAll(".titles a.active");
+
+  for (let activeLink of activeLinks) {
+    activeLink.classList.remove("active");
+  }
+
+  /* add class 'active' to the clicked link */
+  const clickedElement = this;
+  clickedElement.classList.add("active");
+
+  /* remove class 'active' from all articles */
+  const posts = document.querySelectorAll(".post");
+  for (let post of posts) {
+    post.classList.remove("active");
+  }
+
+  /* get 'href' attribute from the clicked link */
+  const linkHref = clickedElement.getAttribute("href");
+
+  /* find the correct article using the selector (value of 'href' attribute) */
+  const correctArticle = document.getElementById(linkHref.replace("#", ""));
+
+  /* add class 'active' to the correct article */
+  correctArticle.classList.add("active");
+};
+
+function addListenersToLinks() {
+  const links = document.querySelectorAll(".titles a");
+
+  for (let link of links) {
+    link.addEventListener("click", titleClickHandler);
+  }
+}
+
+// tags
 
 function generateTags() {
   /* find all articles */
@@ -113,8 +108,10 @@ function generateTags() {
     tagsWrapper.insertAdjacentHTML("beforeend", html);
   }
   /* END LOOP: for every article: */
+
+
+  // TUTAJ ADD CLICK LISTENERS TO TAGS A Z DOLU WYWALIC
 }
-generateTags();
 
 function tagClickHandler(event) {
   /* prevent default action for this event */
@@ -153,6 +150,10 @@ function tagClickHandler(event) {
 function addClickListenersToTags() {
   /* find all links to tags */
   const linkTags = document.querySelectorAll('a[href^="#tag-"]');
+
+  // użycie w addClickListenersToAuthorLinks
+  // const authorLinks = document.querySelectorAll('a[data-author="${author}} "]');
+
   console.log(linkTags);
   // 'a.active[href^="#tag-"]'
 
@@ -164,6 +165,26 @@ function addClickListenersToTags() {
   /* END LOOP: for each link */
 }
 
+// authors
+
+function generateAuthors() {
+  const allArticles = document.querySelectorAll(optArticleSelector); 
+  for (let article of allArticles) {
+    const authorWrapper = article.querySelector(optPostAuthorWrapperSelector);
+    const author = article.dataset.author;
+    const authorLink = `<li><a href="#" data-author=${author}>${author}</a></li>`;
+    authorWrapper.innerHTML = authorLink;
+  }
+}
+
+function tagClickHandler(event) {}
+
+function addClickListenersToAuthorLinks() {}
+
+
+generateTitleLinks();
+generateTags();
+generateAuthors();
 addClickListenersToTags();
 
 // https://developer.mozilla.org/pl/docs/Web/JavaScript/Referencje/Obiekty/Array/map
