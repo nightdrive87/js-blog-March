@@ -1,5 +1,15 @@
 "use strict";
 
+const templates = {
+  articleLink: Handlebars.compile(document.querySelector('#template-article-link').innerHTML),
+  tagLink: Handlebars.compile(document.querySelector('#template-tag-link').innerHTML),
+  authorLink: Handlebars.compile(document.querySelector('#template-author-link').innerHTML),
+  tagCloudLink: Handlebars.compile(document.querySelector('#template-tagCloudLink').innerHTML),
+  listAuthorsLink: Handlebars.compile(document.querySelector('#template-listAuthorsLink').innerHTML)
+
+  
+}
+
 const opts = { 
   articleSelector: '.post',
   titleSelector: '.post-title',
@@ -29,21 +39,17 @@ function generateTitleLinks(customSelector = "") {
     const articleId = article.id;
 
     /* find the title element */
-    const title = article.querySelector(opts.titleListSelector);
+    const title = article.querySelector(opts.titleSelector);
 
     /* get the title from the title element */
     const titleContent = title.innerHTML;
 
     /* create HTML of the link */
-    const linkHtml =
-      '<li><a href="#' +
-      articleId +
-      '"><span>' +
-      titleContent +
-      "</span></a></li>";
+    const linkHTMLData = {id: articleId, title: titleContent};
+    const linkHTML = templates.articleLink(linkHTMLData);
 
     /* insert link into titleList */
-    titleList.insertAdjacentHTML("beforeend", linkHtml);
+    titleList.insertAdjacentHTML("beforeend", linkHTML);
   }
 
   addListenersToLinks();
@@ -114,7 +120,11 @@ function generateTags() {
     /* START LOOP: for each tag */
     for (let tag of tagsArray) {
       /* generate HTML of the link  */
-      const tagLink = `<li><a href="#tag-${tag}">${tag}</a>&nbsp;</li>`;
+
+      console.log(tag)
+      const taglinkData = { tag: tag};
+      const tagLink = templates.tagLink(taglinkData);
+      console.log('dsadsa' + tagLink)
       // poczytać o nbsp;
       /* add generated code to html variable */
       html += tagLink;
@@ -161,12 +171,17 @@ function generateTags() {
   }
   const tagsParams = calculateTagsParams(allTags);
 
-  let allTagsHTML = '';
+  const allTagsData = {tags: []};
+
   for (let tag in allTags){ // <li><a href="#tag-cats" class="tag-size-5">cats (3)</a></li>
-    allTagsHTML += '<span><a href="#tag-' + tag + '" class="tag-size-' + calculateTagClass(allTags[tag], tagsParams)+ '">' + tag + ' </a></span>'; //co to kurwa jest?!
-    // allTagsHTML += tag + ' (' + allTags[tag] + ')'; // --> cats (3)      pobierasz wartość z kolekcji i wypluwa liczbę wystąpień
+  allTagsData.tags.push({
+    tag: tag,
+    count: allTags[tag],
+    className: calculateTagClass(allTags[tag], tagsParams)
+  });
+  
   }
-  tagList.innerHTML = allTagsHTML;
+  tagList.innerHTML = templates.tagCloudLink(allTagsData)
   // TUTAJ ADD CLICK LISTENERS TO TAGS A Z DOLU WYWALIC
 }
 
@@ -221,7 +236,8 @@ function generateAuthors() {
   const allArticles = document.querySelectorAll(opts.articleSelector);
 
   let allAuthors = {};
-  let allAuthorsHTML = '';
+  let listAuthorsData = {listauthors: []};
+
   for (let article of allArticles) {
     const authorWrapper = article.querySelector(opts.postAuthorWrapperSelector);
     let html = "";
@@ -234,17 +250,25 @@ function generateAuthors() {
       allAuthors[author]++;
     } 
 
-    const authorLink = `<li><a href="#" data-author='${author}'>${author}</a></li>`;
+    const authorHTMLData = {author: author};
+    const authorLink = templates.authorLink(authorHTMLData);
   
     authorWrapper.innerHTML = authorLink;
     
   }
   for (let author in allAuthors){
-    allAuthorsHTML += '<li><a href="#" data-author="' + author + '">' + author +  ' (' + allAuthors[author] + ')';
+
+    listAuthorsData.listauthors.push({
+      author: author,
+      count: allAuthors[author]
+    })
+    //allAuthorsHTML += '<li><a href="#" data-author="' + author + '">' + author +  ' (' + allAuthors[author] + ')';
   }
 
   let authorList = document.querySelector('.authors');
-  authorList.innerHTML = allAuthorsHTML;
+  authorList.innerHTML = templates.listAuthorsLink(listAuthorsData);
+
+  console.log(listAuthorsData)
 }
 //START Dodane 13-05-2020
 function authorClickHandler(event) {
