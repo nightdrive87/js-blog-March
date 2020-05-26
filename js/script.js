@@ -6,8 +6,6 @@ const templates = {
   authorLink: Handlebars.compile(document.querySelector('#template-author-link').innerHTML),
   tagCloudLink: Handlebars.compile(document.querySelector('#template-tagCloudLink').innerHTML),
   listAuthorsLink: Handlebars.compile(document.querySelector('#template-listAuthorsLink').innerHTML)
-
-  
 }
 
 const opts = { 
@@ -94,7 +92,6 @@ function addListenersToLinks() {
 function calculateTagClass(count,params) {
   const normalizedCount = count - params.min;
   const normalizedMax = params.max - params.min;
-
   const percentage = normalizedCount / normalizedMax;
   const classNumber = Math.floor(percentage * (opts.cloudClassCount - 1 ) + 1);
   return classNumber;
@@ -120,11 +117,8 @@ function generateTags() {
     /* START LOOP: for each tag */
     for (let tag of tagsArray) {
       /* generate HTML of the link  */
-
-      console.log(tag)
       const taglinkData = { tag: tag};
       const tagLink = templates.tagLink(taglinkData);
-      console.log('dsadsa' + tagLink)
       // poczytać o nbsp;
       /* add generated code to html variable */
       html += tagLink;
@@ -152,7 +146,6 @@ function generateTags() {
     const params = {
       min: 999999,
       max: 0,
-      
     }
    
     for (let tag in tags) {
@@ -162,7 +155,6 @@ function generateTags() {
       }
       if(tags[tag] < params.min){
         params.min = tags[tag]
-        
       }
       
     }
@@ -170,7 +162,6 @@ function generateTags() {
 
   }
   const tagsParams = calculateTagsParams(allTags);
-
   const allTagsData = {tags: []};
 
   for (let tag in allTags){ // <li><a href="#tag-cats" class="tag-size-5">cats (3)</a></li>
@@ -179,7 +170,6 @@ function generateTags() {
     count: allTags[tag],
     className: calculateTagClass(allTags[tag], tagsParams)
   });
-  
   }
   tagList.innerHTML = templates.tagCloudLink(allTagsData)
   // TUTAJ ADD CLICK LISTENERS TO TAGS A Z DOLU WYWALIC
@@ -262,20 +252,16 @@ function generateAuthors() {
       author: author,
       count: allAuthors[author]
     })
-    //allAuthorsHTML += '<li><a href="#" data-author="' + author + '">' + author +  ' (' + allAuthors[author] + ')';
   }
 
   let authorList = document.querySelector('.authors');
   authorList.innerHTML = templates.listAuthorsLink(listAuthorsData);
-
-  console.log(listAuthorsData)
 }
 //START Dodane 13-05-2020
 function authorClickHandler(event) {
   event.preventDefault();
   const clickedElement = this;
   const href = clickedElement.getAttribute("data-author");
-  // console.log(href);
 
   generateTitleLinks('[data-author="' + href + '"]');
 }
@@ -287,14 +273,10 @@ function addClickListenersToAuthorLinks() {
   }
 
 }
-
-//KONIEC 13-05-2020
-
-
 generateTitleLinks();
 generateTags();
 generateAuthors();
-addClickListenersToTags(); // DODANE 13-05-2020
-addClickListenersToAuthorLinks(); // DODANE 13-05-2020
+addClickListenersToTags(); 
+addClickListenersToAuthorLinks(); 
 // https://developer.mozilla.org/pl/docs/Web/JavaScript/Referencje/Obiekty/Array/map
 // https://developer.mozilla.org/pl/docs/Web/JavaScript/Referencje/Obiekty/Array/forEach
